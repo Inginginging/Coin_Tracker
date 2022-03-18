@@ -1,27 +1,23 @@
-import React, { useState } from "react";
+import styled from "styled-components";
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //ThemeProvider로 감싸져 있는 App이므로 theme의 속성 사용 가능
+  background-color: ${(props) => props.theme.bgColor};
+`;
+const H1 = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
 
 function App() {
-  const [value, setValue] = useState(""); //""로 초기화 하여 ts에서 알아서 value의 type을 string으로 인식
-  //ts에서 event를 typing 하는 방법
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setValue(event.currentTarget.value);
-  };
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("typed", value);
-  };
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="text"
-          value={value}
-          onChange={onChange}
-        />
-        <button>submit</button>
-      </form>
-    </div>
+    <Container>
+      <H1>Theme</H1>
+    </Container>
   );
 }
 
