@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
   padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
 const Header = styled.header`
   height: 15vh;
@@ -29,51 +32,51 @@ const Coin = styled.li`
     }
   }
 `;
+const Loader = styled.span`
+  display: block;
+  text-align: center;
+`;
 
-//fake data
-const coins = [
-  {
-    id: "btc-bitcoin",
-    name: "Bitcoin",
-    symbol: "BTC",
-    rank: 1,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "eth-ethereum",
-    name: "Ethereum",
-    symbol: "ETH",
-    rank: 2,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "hex-hex",
-    name: "HEX",
-    symbol: "HEX",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-];
+//Coin data의 type
+interface ICoin {
+  id: string;
+  name: string;
+  symbol: string;
+  rank: number;
+  is_new: boolean;
+  is_active: boolean;
+  type: string;
+}
 
 function Home() {
+  const [coins, setCoins] = useState<ICoin[]>([]); //coins는 ICoin의 형태를 띈 요소들로 이루어진 배열임
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    //real data
+    //data를 fetch 하는 즉시 실행 함수
+    (async () => {
+      const response = await fetch("https://api.coinpaprika.com/v1/coins");
+      const data = await response.json();
+      setCoins(data.slice(0, 100));
+      setLoading(false);
+    })();
+  }, []);
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      <CoinList>
-        {coins.map((coin) => (
-          <Coin key={coin.id}>
-            <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
-          </Coin>
-        ))}
-      </CoinList>
+      {loading ? (
+        <Loader>loading...</Loader>
+      ) : (
+        <CoinList>
+          {coins.map((coin) => (
+            <Coin key={coin.id}>
+              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+            </Coin>
+          ))}
+        </CoinList>
+      )}
     </Container>
   );
 }
