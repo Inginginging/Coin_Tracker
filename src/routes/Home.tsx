@@ -25,7 +25,9 @@ const Coin = styled.li`
   border-radius: 15px;
   a {
     padding: 20px;
-    display: block;
+    //coin img와 coin name을 정렬하기 위해
+    display: flex;
+    align-items: center;
     transition: color 0.3s ease-in-out;
     &:hover {
       color: ${(props) => props.theme.accentColor};
@@ -35,6 +37,11 @@ const Coin = styled.li`
 const Loader = styled.span`
   display: block;
   text-align: center;
+`;
+const Img = styled.img`
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
 `;
 
 //Coin data의 type
@@ -72,7 +79,17 @@ function Home() {
         <CoinList>
           {coins.map((coin) => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+              <Link
+                to={`/${coin.id}`}
+                state={{
+                  name: coin.name,
+                }} /*다음 페이지로 이동 시 현재 페이지의 정보(state)도 같이 보낼 수 있음*/
+              >
+                <Img
+                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
+                />
+                {coin.name} &rarr;
+              </Link>
             </Coin>
           ))}
         </CoinList>
