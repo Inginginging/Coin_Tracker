@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useMatch,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -21,10 +27,53 @@ const Loader = styled.span`
   display: block;
   text-align: center;
 `;
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: #818380;
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+`;
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0px;
+  gap: 10px;
+`;
+const Tab = styled.span<{ isActive: boolean }>`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #818380;
+  padding: 7px 0px;
+  border-radius: 10px;
+  color: ${(props) =>
+    props.isActive ? props.theme.accentColor : props.theme.textColor};
+  a {
+    display: block;
+  }
+`;
 
 //Home Route에서 받아오는 state의 type 지정
-interface IState {
-  name: string;
+interface ILocation {
+  state: {
+    name: string;
+  };
 }
 interface IInfoData {
   id: string;
@@ -82,12 +131,13 @@ interface IPriceData {
 
 function Coin() {
   const [loading, setLoading] = useState(true);
-  //이전 route에서 넘어온 state정보를 가져오는 hook
-  const location = useLocation();
-  const { name } = location.state as IState; //Home에서 넘어온 state는 IState형식임
+  const { state } = useLocation() as ILocation; //Home에서 넘어온 state는 ILocation에서 지정했음
   const { coinId } = useParams(); //url의 parameter obj를 가져오는 hook
   const [info, setInfo] = useState<IInfoData>();
   const [price, setPrice] = useState<IPriceData>();
+  const chartMatch = useMatch(`/${coinId}/chart`); //해당 url과 일치하면 match obj 반환
+  const priceMatch = useMatch(`/${coinId}/price`);
+
   //fetch coin info & price info
   useEffect(() => {
     (async () => {
@@ -99,14 +149,56 @@ function Coin() {
       ).json();
       setInfo(infoData);
       setPrice(priceData);
+      setLoading(false);
     })();
   }, []);
   return (
     <Container>
       <Header>
-        <Title>{name || "loading..."}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+        </Title>
       </Header>
-      {loading ? <Loader>loading...</Loader> : null}
+      {loading ? (
+        <Loader>loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol</span>
+              <span>{info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source</span>
+              <span>{info?.open_source ? "YES" : "NO"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Supply</span>
+              <span>{price?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply</span>
+              <span>{price?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+          <Tabs>
+            <Tab isActive={chartMatch !== null}>
+              <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+            <Tab isActive={priceMatch !== null}>
+              <Link to={`/${coinId}/price`}>Price</Link>
+            </Tab>
+          </Tabs>
+          <Outlet /*nested route를 위한  */ />
+        </>
+      )}
     </Container>
   );
 }
