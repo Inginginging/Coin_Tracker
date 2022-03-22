@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import {
   Link,
   Outlet,
@@ -7,6 +8,7 @@ import {
   useParams,
 } from "react-router-dom";
 import styled from "styled-components";
+import { infoFetcher, priceFetcher } from "../api";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -75,6 +77,7 @@ interface ILocation {
     name: string;
   };
 }
+
 interface IInfoData {
   id: string;
   name: string;
@@ -130,14 +133,23 @@ interface IPriceData {
 }
 
 function Coin() {
-  const [loading, setLoading] = useState(true);
   const { state } = useLocation() as ILocation; //Home에서 넘어온 state는 ILocation에서 지정했음
   const { coinId } = useParams(); //url의 parameter obj를 가져오는 hook
-  const [info, setInfo] = useState<IInfoData>();
-  const [price, setPrice] = useState<IPriceData>();
   const chartMatch = useMatch(`/${coinId}/chart`); //해당 url과 일치하면 match obj 반환
   const priceMatch = useMatch(`/${coinId}/price`);
 
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
+    ["info", coinId],
+    () => infoFetcher(coinId!)
+  ); //! => 확정적으로 할당된다는 의미
+  const { isLoading: priceLoading, data: priceData } = useQuery<IPriceData>(
+    ["price", coinId],
+    () => priceFetcher(coinId!)
+  );
+  const loading = infoLoading || priceLoading;
+  /* const [loading, setLoading] = useState(true);
+  const [info, setInfo] = useState<IInfoData>();
+  const [price, setPrice] = useState<IPriceData>();
   //fetch coin info & price info
   useEffect(() => {
     (async () => {
@@ -151,12 +163,12 @@ function Coin() {
       setPrice(priceData);
       setLoading(false);
     })();
-  }, []);
+  }, []); */
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
       </Header>
       {loading ? (
@@ -166,26 +178,26 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Rank</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol</span>
-              <span>{info?.symbol}</span>
+              <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source</span>
-              <span>{info?.open_source ? "YES" : "NO"}</span>
+              <span>{infoData?.open_source ? "YES" : "NO"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Supply</span>
-              <span>{price?.total_supply}</span>
+              <span>{priceData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply</span>
-              <span>{price?.max_supply}</span>
+              <span>{priceData?.max_supply}</span>
             </OverviewItem>
           </Overview>
           <Tabs>

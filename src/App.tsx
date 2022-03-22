@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 //global style을 위한 styled-componenet의 객체
 const GlobalStyle = createGlobalStyle`
@@ -71,6 +72,7 @@ function App() {
     <>
       <GlobalStyle />
       <Router />
+      <ReactQueryDevtools initialIsOpen={true} />
     </>
   );
 }

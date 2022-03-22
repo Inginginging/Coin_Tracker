@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { coinFetcher } from "../api";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -56,7 +58,9 @@ interface ICoin {
 }
 
 function Home() {
-  const [coins, setCoins] = useState<ICoin[]>([]); //coins는 ICoin의 형태를 띈 요소들로 이루어진 배열임
+  //react Query를 사용하여 한줄로 대체
+  const { isLoading, data } = useQuery<ICoin[]>("allCoins", coinFetcher);
+  /* const [coins, setCoins] = useState<ICoin[]>([]); //coins는 ICoin의 형태를 띈 요소들로 이루어진 배열임
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     //real data
@@ -67,17 +71,17 @@ function Home() {
       setCoins(data.slice(0, 100));
       setLoading(false);
     })();
-  }, []);
+  }, []); */
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      {loading ? (
+      {isLoading ? (
         <Loader>loading...</Loader>
       ) : (
         <CoinList>
-          {coins.map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={`/${coin.id}`}
