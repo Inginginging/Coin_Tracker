@@ -21,6 +21,7 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
@@ -69,6 +70,24 @@ const Tab = styled.span<{ isActive: boolean }>`
     props.isActive ? props.theme.accentColor : props.theme.textColor};
   a {
     display: block;
+  }
+`;
+const HomeBtn = styled.div`
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 60px;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  padding: 10px;
+  a {
+    display: block;
+    &:hover {
+      color: ${(props) => props.theme.accentColor};
+      transition: color 0.2s ease-in-out;
+    }
   }
 `;
 
@@ -151,23 +170,6 @@ function Coin() {
     }
   );
   const loading = infoLoading || priceLoading;
-  /* const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<IInfoData>();
-  const [price, setPrice] = useState<IPriceData>();
-  //fetch coin info & price info
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPrice(priceData);
-      setLoading(false);
-    })();
-  }, []); */
   return (
     <Container>
       <Helmet>
@@ -176,6 +178,9 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
+        <HomeBtn>
+          <Link to={`/`}>HOME</Link>
+        </HomeBtn>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>

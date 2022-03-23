@@ -60,18 +60,6 @@ interface ICoin {
 function Home() {
   //react Query를 사용하여 한줄로 대체
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", coinFetcher);
-  /* const [coins, setCoins] = useState<ICoin[]>([]); //coins는 ICoin의 형태를 띈 요소들로 이루어진 배열임
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    //real data
-    //data를 fetch 하는 즉시 실행 함수
-    (async () => {
-      const response = await fetch("https://api.coinpaprika.com/v1/coins");
-      const data = await response.json();
-      setCoins(data.slice(0, 100));
-      setLoading(false);
-    })();
-  }, []); */
   return (
     <Container>
       <Helmet>
