@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import {
   Link,
@@ -143,7 +144,11 @@ function Coin() {
   ); //! => 확정적으로 할당된다는 의미
   const { isLoading: priceLoading, data: priceData } = useQuery<IPriceData>(
     ["price", coinId],
-    () => priceFetcher(coinId!)
+    () => priceFetcher(coinId!),
+    //refetch하는 시간 설정. => 실시간으로 정보 fetch 함
+    {
+      refetchInterval: 5000,
+    }
   );
   const loading = infoLoading || priceLoading;
   /* const [loading, setLoading] = useState(true);
@@ -165,6 +170,11 @@ function Coin() {
   }, []); */
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
@@ -184,8 +194,8 @@ function Coin() {
               <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source</span>
-              <span>{infoData?.open_source ? "YES" : "NO"}</span>
+              <span>Price</span>
+              <span>${priceData?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>

@@ -20,8 +20,12 @@ interface IChart {
 
 function Chart() {
   const { coinId } = useOutletContext<IChart>(); //outlet의 context porp으로부터 받아오는 coinId
-  const { isLoading, data } = useQuery<IData[]>(["ohlcv", coinId], () =>
-    chartFetcher(coinId)
+  const { isLoading, data } = useQuery<IData[]>(
+    ["ohlcv", coinId],
+    () => chartFetcher(coinId),
+    {
+      refetchInterval: 5000,
+    }
   );
   return (
     <div>
