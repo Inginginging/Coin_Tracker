@@ -77,7 +77,6 @@ interface ILocation {
     name: string;
   };
 }
-
 interface IInfoData {
   id: string;
   name: string;
@@ -208,7 +207,7 @@ function Coin() {
               <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           </Tabs>
-          <Outlet /*nested route를 위한  */ />
+          <Outlet context={{ coinId }} />
         </>
       )}
     </Container>

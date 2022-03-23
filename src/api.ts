@@ -15,3 +15,11 @@ export function priceFetcher(coinId: string) {
     response.json()
   );
 }
+
+export function chartFetcher(coinId: string) {
+  const endDate = Math.floor(Date.now() / 1000); //가격 측정 종료일. 오늘
+  const startDate = endDate - 60 * 60 * 24 * 7 * 4; //2주일 전
+  return fetch(
+    `${BASE_URL}/coins/${coinId}/ohlcv/historical?start=${startDate}&end=${endDate}`
+  ).then((response) => response.json());
+}
