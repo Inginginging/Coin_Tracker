@@ -16,6 +16,7 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
@@ -47,6 +48,16 @@ const Img = styled.img`
   height: 35px;
   margin-right: 10px;
 `;
+const Btn = styled.button`
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.textColor};
+  border-radius: 3px;
+  color: ${(props) => props.theme.textColor};
+  cursor: pointer;
+  position: absolute;
+  right: 50px;
+  padding: 5px 10px;
+`;
 
 //Coin data의 type
 interface ICoin {
@@ -72,7 +83,7 @@ function Home() {
       </Helmet>
       <Header>
         <Title>코인</Title>
-        <button onClick={toggle}>toggle</button>
+        <Btn onClick={toggle}>toggle</Btn>
       </Header>
       {isLoading ? (
         <Loader>loading...</Loader>
