@@ -21,8 +21,8 @@ const Title = styled.h1`
 `;
 const CoinList = styled.ul``;
 const Coin = styled.li`
-  background-color: ${(props) => props.theme.textColor};
-  color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.cardColor};
+  color: ${(props) => props.theme.textColor};
   margin-bottom: 10px;
   border-radius: 15px;
   a {
@@ -57,7 +57,12 @@ interface ICoin {
   type: string;
 }
 
-function Home() {
+//Router에서 받아온 toggle의 type을 정해주는 interface
+interface IHome {
+  toggle: () => void;
+}
+
+function Home({ toggle }: IHome) {
   //react Query를 사용하여 한줄로 대체
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", coinFetcher);
   return (
@@ -67,6 +72,7 @@ function Home() {
       </Helmet>
       <Header>
         <Title>코인</Title>
+        <button onClick={toggle}>toggle</button>
       </Header>
       {isLoading ? (
         <Loader>loading...</Loader>
@@ -81,7 +87,7 @@ function Home() {
                 }} /*다음 페이지로 이동 시 현재 페이지의 정보(state)도 같이 보낼 수 있음*/
               >
                 <Img
-                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
+                  src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}
                 />
                 {coin.name} &rarr;
               </Link>

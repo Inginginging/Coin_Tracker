@@ -4,7 +4,12 @@ import Home from "./routes/Home";
 import Chart from "./routes/Chart";
 import Price from "./routes/Price";
 
-function Router() {
+//App에서 받아온 toggle의 type을 정해주는 interface
+interface IRouter {
+  toggle: () => void;
+}
+
+function Router({ toggle }: IRouter) {
   return (
     <BrowserRouter>
       <Routes>
@@ -14,7 +19,7 @@ function Router() {
         </Route>
       </Routes>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home toggle={toggle} />} />
       </Routes>
     </BrowserRouter>
   );
