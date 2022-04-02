@@ -1,8 +1,10 @@
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { coinFetcher } from "../api";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -57,14 +59,12 @@ interface ICoin {
   type: string;
 }
 
-//Router에서 받아온 toggle의 type을 정해주는 interface
-interface IHome {
-  toggle: () => void;
-}
-
-function Home({ toggle }: IHome) {
+function Home() {
   //react Query를 사용하여 한줄로 대체
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", coinFetcher);
+  //atom의 prop을 변경시키는 hook
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggle = () => setDarkAtom((prev) => !prev);
   return (
     <Container>
       <Helmet>

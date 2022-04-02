@@ -3,6 +3,8 @@ import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { darkMode, lightMode } from "./theme";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atoms";
 
 //global style을 위한 styled-componenet의 객체
 const GlobalStyle = createGlobalStyle`
@@ -70,13 +72,13 @@ a {
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
-  const toggle = () => setIsDark((prev) => !prev); //Router의 props로 보냄.
+  //atom의 prop을 가져오는 hook
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <>
       <ThemeProvider theme={isDark ? darkMode : lightMode}>
         <GlobalStyle />
-        <Router toggle={toggle} />
+        <Router />
         <ReactQueryDevtools initialIsOpen={true} />
       </ThemeProvider>
     </>
