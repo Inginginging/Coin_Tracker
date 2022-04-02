@@ -29,8 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -54,5 +54,5 @@
     "@types/react-helmet": "^6.1.5",
     "@types/styled-components": "^5.1.24"
   },
-  "homepage": "https://Inginginging.github.io/coin_tracker"
+  "homepage": "https://Inginginging.github.io/Coin_Tracker"
 }
